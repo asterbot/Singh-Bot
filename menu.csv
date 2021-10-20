@@ -1,16 +1,16 @@
-dish_id, name, price, qty_available, spice_rating
-1, Dal Makhani, 750, 100, 1
-2, Butter Naan, 500, 100, 0
-3, Butter Chicken, 800, 100, 2
-4, Garlic Naan, 500, 100, 0
-5, Plain Roti, 400, 100, 0
-6, Tandoori Paneer, 650, 100, 2
-7, Greek Salad, 450, 100, 0
-8, Non Veg Biryani, 600, 100, 3
-9, Curd, 300, 100, 0
-10, Masala Dosa, 500, 100, 3
-11, Veg Platter, 950, 100, 1
-12, Non Veg Platter, 1000, 100, 1
-13, Idli (3 pcs), 400, 100, 0
-14, Sambar, 300, 100, 2
-15, Paneer Tikka, 200, 100, 1
+dish_id,name,price,qty_available,spice_rating
+1,Dal Makhani,750,100,1
+2,Butter Naan,500,100,0
+3,Butter Chicken,800,100,2
+4,Garlic Naan,500,100,0
+5,Plain Roti,400,100,0
+6,Tandoori Paneer,650,100,2
+7,Greek Salad,450,100,0
+8,Non Veg Biryani,600,100,3
+9,Curd,300,100,0
+10,Masala Dosa,500,100,3
+11,Veg Platter,950,100,1
+12,Non Veg Platter,1000,100,1
+13,Idli (3 pcs),400,100,0
+14,Sambar,300,100,2
+15,Paneer Tikka,200,100,1

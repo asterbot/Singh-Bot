@@ -1,3 +1,4 @@
+import csv
 from tkinter import *
 from tkinter import messagebox
 root=Tk()
@@ -5,27 +6,24 @@ root.title("Edit")
 
 #Refreshes the whole shown database
 def refresh():
-    f=open("items.txt","r")
-    items=f.read().split("\n")
+    f = open("menu.csv","r")
+    items = csv.reader(f)
+    dish_list = []
+    for row in items:
+        dish_list.append(row)
     f.close()
-    #Initial format : [a|x,b|y,c|z,d|w,e|o]
 
-    for i in range(len(items)):
-        items[i]=(items[i].split("|"))
+    dish_list[0] = ['ID', 'Dish', 'Price', 'Quantity', 'Spice']
+    srno=''; names=''; prices=''; qtys=''; types=''
 
-    #New format : [[a,x].[b,y],[c,z],[d,w],[e,o]]
-    srno=''
-    names=''
-    prices=''
-    qtys=''
-    types=''
     #[['Sr No.', 'Items', 'Price', 'Quantity', 'Type'], ['1', 'Apple', '50', '10', 'kg'], ['2', 'Banana', '30', '20', 'kg'], ['3', 'Chocolate', '50', '30', 'qty'], ['4', 'Ice Cream', '40', '15', 'qty'], ['5', 'Pizza', '70', '20', 'qty'], ['6', 'Pasta', '30', '20', 'kg']]
-    for i in items:
-        srno+=i[0] + "\n"
-        names+=i[1] + "\n"
-        prices+=i[2] + "\n"
-        qtys+=i[3] + "\n"
-        types+=i[4] + "\n"
+    for d in dish_list:
+        srno += d[0] + "\n"
+        names += d[1] + "\n"
+        prices += d[2] + "\n"
+        qtys += d[3] + "\n"
+        types += d[4] + "\n"
+
     #adding everything
     srno_label.config(text=srno)
     names_label.config(text=names)
@@ -60,14 +58,16 @@ def backediting():
     add_price_entry.grid_forget()
     add_qty_label.grid_forget()
     add_qty_entry.grid_forget()
-    radio_kg.grid_forget()
-    radio_qty.grid_forget()
+    radio_none.grid_forget()
+    radio_low.grid_forget()
+    radio_med.grid_forget()
+    radio_high.grid_forget()
     submit_additems.grid_forget()
     srno_removeitems_label.grid_forget()
     srno_removeitems_entry.grid_forget()
     submit_removeitems.grid_forget()
 
-backfromediting=Button(root,text="Back",command=backediting)
+backfromediting=Button(root,text="Cancel",command=backediting)
 backfromediting.grid_forget()
 
 refresh()
@@ -189,7 +189,7 @@ def editopen(m):
         new_edit_label.grid(row=2,column=5)
         new_edit_entry.grid(row=2,column=6)
         submitbutton_edit.grid(row=3,column=5)
-        backfromediting.grid(row=4,column=5)
+        backfromediting.grid(row=3,column=6)
     else:
         srno_edit_label.grid(row=1,column=5)
         srno_edit_entry.grid(row=1,column=6)
@@ -218,17 +218,19 @@ def showadditems():
     add_price_entry.grid(row=2,column=6)
     add_qty_label.grid(row=3,column=5)
     add_qty_entry.grid(row=3,column=6)
-    radio_kg.grid(row=4,column=5)
-    radio_qty.grid(row=4,column=6)
+    radio_none.grid(row=4,column=5)
+    radio_low.grid(row=4,column=6)
+    radio_med.grid(row=4, column=7)
+    radio_high.grid(row=4, column=8)
     submit_additems.grid(row=5,column=5)
-    backfromediting.grid(row=6,column=5)
+    backfromediting.grid(row=5,column=6)
 
 def showremoveitems():
     backediting()
     srno_removeitems_label.grid(row=1,column=5)
     srno_removeitems_entry.grid(row=1,column=6)
     submit_removeitems.grid(row=2,column=5)
-    backfromediting.grid(row=3,column=5)
+    backfromediting.grid(row=2,column=6)
 
 add_button=Button(root,text="Add Item",command=showadditems)
 add_button.grid(row=1,column=4)
@@ -248,22 +250,23 @@ add_qty_label=Label(root,text="Enter quantity")
 add_qty_label.grid_forget()
 add_qty_entry=Entry(root,exportselection=0, fg='blue')
 add_qty_entry.grid_forget()
-text= ""
-global additem_type
+text = ""
 additem_type=""
+
 def type_add():
     global additem_type
-    selection=typeforadd.get()
-    if selection==1:
-        additem_type="kg"
-    elif selection==2:
-        additem_type="qty"
+    additem_type=typeforadd.get()
 
-typeforadd=IntVar()
-radio_kg=Radiobutton(root, text="Kg", variable=typeforadd,value=1, command=type_add)
-radio_qty=Radiobutton(root, text="Qty", variable=typeforadd,value=2, command=type_add)
-radio_kg.grid_forget()
-radio_qty.grid_forget()
+typeforadd = IntVar()
+radio_none = Radiobutton(root, text="None", variable=typeforadd, value=0, command=type_add)
+radio_low = Radiobutton(root, text="Low", variable=typeforadd, value=1, command=type_add)
+radio_high = Radiobutton(root, text="High", variable=typeforadd, value=3, command=type_add)
+radio_med = Radiobutton(root, text="Medium", variable=typeforadd, value=2, command=type_add)
+radio_none.grid_forget()
+radio_low.grid_forget()
+radio_med.grid_forget()
+radio_high.grid_forget()
+
 def submitforadd():
     global additem_type
     newname=add_name_entry.get()
@@ -276,7 +279,7 @@ def submitforadd():
         messagebox.showerror("Error","You must choose a type")
         return
     file=open("items.txt","r")
-    things=file.read().split("\n") 
+    things=file.read().split("\n")
     file.close()
     last=things[-1].split("|")
     last_srno=last[0]
@@ -306,7 +309,7 @@ def submitforadd():
 submit_additems=Button(root,text="Submit",command=submitforadd)
 submit_additems.grid_forget()
 
-#Remove items 
+#Remove items
 
 def removeitem():
     file=open("items.txt","r")

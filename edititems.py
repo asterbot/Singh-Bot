@@ -18,6 +18,7 @@ def refresh():
 
     #[['Sr No.', 'Items', 'Price', 'Quantity', 'Type'], ['1', 'Apple', '50', '10', 'kg'], ['2', 'Banana', '30', '20', 'kg'], ['3', 'Chocolate', '50', '30', 'qty'], ['4', 'Ice Cream', '40', '15', 'qty'], ['5', 'Pizza', '70', '20', 'qty'], ['6', 'Pasta', '30', '20', 'kg']]
     for d in dish_list:
+        print(d)
         srno += d[0] + "\n"
         names += d[1] + "\n"
         prices += d[2] + "\n"
@@ -74,7 +75,6 @@ refresh()
 
 
 # 1= Name 2=Prices 3=Quantity 4=Type
-global mode
 mode=0
 modes=['','Name','Price','Quantity','Type']
 
@@ -121,15 +121,15 @@ def edit():
         new_edit_entry.delete(0,END)
 
 def type_edit(k):
-    srno_new=srno_edit_entry.get()
-    file1=open("items.txt","r")
-    first=file1.read().split("\n")
+    srno_new = srno_edit_entry.get()
+    file1 = open("menu.csv","r")
+    first = file1.read().split("\n")
     file1.close()
-    n=first[-1][0] #Max sr no
-    if not(srno_new).isdigit(): #Makes sure srno is an integer
+    n = first[-1][0] # Max sr no
+    if not(srno_new.isdigit()): #Makes sure srno is an integer
         messagebox.showerror("Error","You must enter a number for srno")
         return
-    elif int(srno_new)<1 or int(srno_new)>int(n): #Makes sure srno is in range
+    elif int(srno_new) < 1 or int(srno_new) > int(n): #Makes sure srno is in range
         messagebox.showerror("Error","You must enter a number within range")
         return
     else:
@@ -156,7 +156,6 @@ def type_edit(k):
         refresh()
         srno_edit_entry.delete(0,END)
 
-global new_edit_label
 srno_edit_label=Label(root,text="Enter srno of item")
 srno_edit_label.grid_forget()
 srno_edit_entry=Entry(root,exportselection=0,fg='blue')
@@ -178,7 +177,8 @@ def editopen(m):
     backediting()
     global new_edit_label
     global mode
-    mode=m
+    mode = m
+
     if mode!=4:
         srno_edit_label.grid(row=1,column=5)
         srno_edit_entry.grid(row=1,column=6)
@@ -258,10 +258,11 @@ def type_add():
     additem_type=typeforadd.get()
 
 typeforadd = IntVar()
+typeforadd.set(None)
 radio_none = Radiobutton(root, text="None", variable=typeforadd, value=0, command=type_add)
 radio_low = Radiobutton(root, text="Low", variable=typeforadd, value=1, command=type_add)
-radio_high = Radiobutton(root, text="High", variable=typeforadd, value=3, command=type_add)
 radio_med = Radiobutton(root, text="Medium", variable=typeforadd, value=2, command=type_add)
+radio_high = Radiobutton(root, text="High", variable=typeforadd, value=3, command=type_add)
 radio_none.grid_forget()
 radio_low.grid_forget()
 radio_med.grid_forget()
@@ -272,40 +273,35 @@ def submitforadd():
     newname=add_name_entry.get()
     newprice=add_price_entry.get()
     newqty=add_qty_entry.get()
+
     if not(newprice.isdigit()) or not(newqty.isdigit()):
         messagebox.showerror("Error","Price and Quantity must be integer values")
         return
-    elif not(additem_type=="kg" or additem_type=="qty"):
+    elif additem_type == "":
         messagebox.showerror("Error","You must choose a type")
         return
-    file=open("items.txt","r")
-    things=file.read().split("\n")
+
+    file = open("menu.csv", "r")
+    last_srno = file.readlines()[-1].split(",")[0]
     file.close()
-    last=things[-1].split("|")
-    last_srno=last[0]
-    adding=str(int(last_srno)+1)+"|"+str(newname)+"|"+str(newprice)+"|"+str(newqty)+"|"+str(additem_type)
-    things.append(adding)
-    file=open("items.txt","w")
-    file.write("")
-    file.close()
-    file2=open("items.txt","a")
-    count=0
-    for i in things:
-        if count!=int(last_srno)+1:
-            file2.write(i+"\n")
-        else:
-            file2.write(i)
-        count+=1
+
+    new_item = [int(last_srno)+1, str(newname), str(newprice), str(newqty), additem_type]
+    file2 = open("menu.csv", "a", newline='')
+    writer = csv.writer(file2)
+    writer.writerow(new_item)
     file2.close()
+
     messagebox.showinfo("Info","Database Updated")
     refresh()
     add_name_entry.delete(0,END)
     add_price_entry.delete(0,END)
     add_qty_entry.delete(0,END)
-    if additem_type=="kg":
-        radio_kg.deselect()
-    else:
-        radio_qty.deselect()
+
+    # if additem_type=="kg":
+    #     radio_kg.deselect()
+    # else:
+    #     radio_qty.deselect()
+
 submit_additems=Button(root,text="Submit",command=submitforadd)
 submit_additems.grid_forget()
 

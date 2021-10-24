@@ -1,41 +1,57 @@
 from tkinter import *
-root=Tk()
+root = Tk()
+root.title("Singh Bot")
 
-def reply(t,faq=False):
+#status: In queue, preparing, finished
+
+faqs=["how does spice rating work?","what kinds of payments are accepted?"]
+faq_replies=["This is how spice rating works", "PayTm, VISA and Mastercard are allowed"]
+
+def fetch_status():
+    pass
+
+def fetch_menu():
+    pass
+
+def open_order():
+    pass
+
+def reply(t):
     response="Sorry we couldn't understand what you were saying. Please try again!"
-    if not faq:
+
+    if t.lower().strip() in faqs:
+        response = faq_replies[faqs.index(t)]
+    else:
         greetings=['hi','hello','sup',"what's up","whats up",'wassup','hey']
+
         if t in greetings:
             response=t.capitalize()+"! How are you?"
 
     texts.configure(state='normal')
     texts.insert('end',"\n\nBot: "+response)
     texts.configure(state='disabled')
-        
 
-def send_text(yes='ok'):
+
+def send_text(param='no'):
     global texting
-    to_send=str(texting.get(1.0,END))
-    if to_send.strip()!='':
+
+    to_send = str(texting.get(1.0,END))
+    if to_send.strip() != '':
         texts.configure(state='normal')
-        texts.insert('end',"\n\nYou: "+to_send.replace("\n",""))
+        texts.insert(END,"\n\nYou: "+to_send.replace("\n",""))
         texts.configure(state='disabled')
         texting.delete(1.0,END)
         reply(to_send.lower().strip())
-    if to_send in faqs:
 
+def faq(index):
+    if index in [0, 1]:
+        texting.delete(1.0,END)
+        texting.insert(END,faqs[index])
+        send_text()
 
-#status: in queue, preparing, finished 
-
-faqs=["What’s the status of my order?","How does spice rating work?","What kinds of payments are accepted?","Show me the menu","Take my order"]
-faq_replies=[""]
-def FAQ(i):
-    if i==4:
-        ###""
-    
 #Intro
-title=Label(root,text="Welcome to Singh Restaurant")
-title.grid(row=0,column=0)
+title=Label(root,text="Welcome to Singh Restaurant",font='Helvetica 20 bold')
+title.grid(row=0,column=0,pady=(5,15))
 texts=Text(root,state='normal')
 texts.insert("end","Bot: Hello! Welcome to Singh Restaurant. How may I help you?")
 texts.config(state="disabled")
@@ -54,17 +70,17 @@ texting=Text(root,height=3,width=75)
 texting.grid(row=7,column=0,sticky='w')
 
 #FAQ's
-title_faqs=Label(root,text="Ask us something!")
-title_faqs.grid(row=0,column=1)
-b1=Button(root,text="What is the status of my order?",command=lambda: FAQ(0))
+title_faqs=Label(root,text="Ask me something!",font='Helvetica 20 bold')
+title_faqs.grid(row=0,column=1,pady=(5,15),padx=(0,10))
+b1=Button(root,text="What is the status of my order?",command=lambda: fetch_status())
 b1.grid(row=1,column=1)
-b2=Button(root,text="How does spice rating work?",command=lambda: FAQ(1))
+b2=Button(root,text="How does spice rating work?",command=lambda: faq(0))
 b2.grid(row=2,column=1)
-b3=Button(root,text="What kinds of payments are accepted?",command=lambda: FAQ(2))
+b3=Button(root,text="What kinds of payments are accepted?",command=lambda: faq(1))
 b3.grid(row=3,column=1)
-b4=Button(root,text="Show me the menu",command=lambda: FAQ(3))
+b4=Button(root,text="Show me the menu",command=lambda: fetch_menu())
 b4.grid(row=4,column=1)
-b4=Button(root,text="Take my order",command=lambda: FAQ(4))
+b4=Button(root,text="Take my order",command=lambda: open_order())
 b4.grid(row=5,column=1)
 
 

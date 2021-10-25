@@ -88,7 +88,7 @@ bill_tell_label.grid(row=0,column=2)
 scrollbar_bill = Scrollbar(root)
 scrollbar_bill.grid(row=1,column=3,ipady=60)
 
-listbox_bill=Listbox(root)
+listbox_bill=Listbox(root,width=30)
 listbox_bill.grid(row=1,column=2)
 
 listbox_bill.config(yscrollcommand=scrollbar_bill.set)
@@ -140,8 +140,8 @@ def genbill():
     global price
     global things
     global added
-    print(added)
-    print(things)
+    #print(added)
+    #print(things)
     count=0
     names=[]
     prices=[]

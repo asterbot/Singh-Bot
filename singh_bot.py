@@ -78,12 +78,9 @@ def open_order():
     srno_bill=1
     added=[]
 
-
     f=open("menu.csv","r")
     r_obj=csv.reader(f)
-    #things=f.read().split("\n")
     things=["|".join(i) for i in r_obj]
-    #print(things)
     f.close()
 
     #Items in stock
@@ -284,14 +281,12 @@ def open_order():
                             paying.destroy()
                             messagebox.showinfo("Info","Transaction completed. Thank you for placing your order! It will be ready in 10 minutes.")
                             ordering.destroy()
-                            listbox_bill.delete(first=0,last=END)
                     elif int(amountgiven)==int(price):
                         yesno=messagebox.askyesno("Proceeding","Proceed with transaction?")
                         if yesno==1:
                             messagebox.showinfo("Info","Transaction completed. Thank you for placing your order! It will be ready in 10 minutes.")
                             paying.destroy()
                             ordering.destroy()
-                            listbox_bill.delete(first=0,last=END)
                     else:
                         messagebox.showwarning("Warning","Amount given is less")
                         pass
@@ -341,7 +336,7 @@ def reply(t):
 
     response="Sorry we couldn't understand what you were saying. Please try again!"
 
-    if t == "take my order":
+    if t in ["take my order", "i want to place my order"]:
         open_order()
     elif t == "show me the menu":
         fetch_menu()
@@ -363,27 +358,31 @@ def reply(t):
         greetings=['hi','hello','sup',"what's up","whats up",'wassup','hey']
 
         if t in greetings:
-            response=t.capitalize()+"! How are you?"
+            response = t.capitalize() + "! How are you?"
         elif t in ["bye", "i'm done eating"]:
-            response="Thanks for eating at Singh Restaurant! Please let us know about your experience and my service!"
+            response = "Thanks for eating at Singh Restaurant! Please let us know about your experience and my service!"
             feedback = True
         elif feedback:
             curr = []
 
-            with open("Orders.csv", "r") as f:
+            with open("orders.csv", "r") as f:
                 reader = csv.reader(f)
 
                 for row in reader:
                     curr.append(row)
 
-            with open("Orders.csv", "w", newline='') as f:
+            with open("orders.csv", "w", newline='') as f:
                 writer = csv.writer(f)
+                curr[-1][-2] = "Finished"
                 curr[-1][-1] = t
                 writer.writerows(curr)
+
+            response = "Thank you for your valuable feedback! We hope to see you again soon!"
 
     texts.configure(state='normal')
     texts.insert('end',"\n\nBot: "+response)
     texts.configure(state='disabled')
+    
 
 def send_text(param='no'):
     global texting
@@ -422,7 +421,7 @@ send.grid(row=7,column=0,sticky='e')
 texting=Text(root,height=3,width=75)
 texting.grid(row=7,column=0,sticky='w')
 
-#FAQ's
+#FAQs
 title_faqs=Label(root,text="Ask me something!",font='Helvetica 20 bold')
 title_faqs.grid(row=0,column=1,pady=(5,15),padx=(0,10))
 b1=Button(root,text="What is the status of my order?",command=lambda: fetch_status())
@@ -438,5 +437,4 @@ b4.grid(row=5,column=1)
 
 
 root.bind('<Return>', send_text)
-
 root.mainloop()
